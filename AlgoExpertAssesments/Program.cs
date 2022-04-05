@@ -52,11 +52,6 @@ namespace AlgoExpertAssesments
          *   * - match any char, any lenght
          *   ? - matches any char, exact 1 position
          */
-
-        /* Fails for
-            fileName: "abcdefg",
-            pattern: "a*b*c*e*f*g"
-        */
         public static bool GlobMatching(string fileName, string pattern)
         {
 
