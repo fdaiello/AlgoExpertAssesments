@@ -38,14 +38,14 @@ namespace AlgoExpertAssesments
             LinkedList pMiddle = null;
             while ( p2 != null ) 
             {
+                //  Save last before middle
+                if (count == middle-1)
+                    pMiddleAnt = p1;
                 p3 = p2.next;
                 p2.next = p1;
                 p1 = p2;
                 p2 = p3;
                 count++;
-                //  Save last before middle
-                if (count == middle-1)
-                    pMiddleAnt = p1;
                 // When middle element is reached, save it
                 if ( count == middle )
                     pMiddle = p1;
