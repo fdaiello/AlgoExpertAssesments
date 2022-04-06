@@ -12,8 +12,8 @@ namespace AlgoExpertAssesments
         // Bugged with odd numbers of elements, or only 2
         public static LinkedList InvertedBisection(LinkedList head)
         {
-            // If null or only one node, do nothing.
-            if (head == null || head.next == null)
+            // If null or only one or two nodes, do nothing.
+            if (head == null || head.next == null || head.next.next == null)
                 return head;
 
             // First I will count how many nodes are there - I will need that to find the middle node
@@ -25,41 +25,65 @@ namespace AlgoExpertAssesments
                 nodesCount++;
             }
 
-            // Now I'll reverse the first half
+            // Define what is the middle element
+            var middle = nodesCount / 2 + nodesCount % 2;
+
+            // Now I'll reverse the whole list
             int count = 1;
             p1 = head;
             var p2 = head.next;
             LinkedList p3=null;
-            while ( p2 != null && count < nodesCount/2) 
+            LinkedList pMiddleNext = null;
+            LinkedList pMiddleAnt = null;
+            LinkedList pMiddle = null;
+            while ( p2 != null ) 
             {
                 p3 = p2.next;
                 p2.next = p1;
                 p1 = p2;
                 p2 = p3;
                 count++;
+                //  Save last before middle
+                if (count == middle-1)
+                    pMiddleAnt = p1;
+                // When middle element is reached, save it
+                if ( count == middle )
+                    pMiddle = p1;
+                // When middle element +1 is reached, save it
+                if ( count== middle+1)
+                    pMiddleNext = p1;
             }
-  
-            // Now p1 points to the last element of the first half - new head
-            LinkedList pNewHead = p1;
-            // p3 points to the firt element of second half - this will be the tail - will need to set next to null
-            LinkedList pnewTail = p3;
 
-            // Now lets reverse second half
-            while (p2 != null)
+            // Adjust pointers. Check if lenght is even or Odd
+            if ( nodesCount%2 == 0)
             {
-                p3 = p2.next;
-                p2.next = p1;
-                p1 = p2;
-                p2 = p3;
-                count++;
+                // Even nodes
+                // 0->1->2->3->4-5
+                // 2->1->0 -> 5->4->3
+
+                //  pMiddle->Next->Next = null
+                pMiddleNext.next = null;
+                //  oldHead->next = last element
+                head.next = p1;
+
+                return pMiddle;
+
             }
+            else
+            {
+                // 0->1->2->3->4
+                // 4->3 ->2-> 1->0
 
-            // Adjust pointers
-            pnewTail.next = null;
-            head.next = p1;
+                // 1->0 -> 2 -> 4->3
+                // Old head points to middle
+                head.next = pMiddle;
+                // Middle points to last element
+                pMiddle.next = p1;
+                // Middle next points null
+                pMiddleNext.next = null;
 
-
-            return pNewHead;
+                return pMiddleAnt;
+            }
         }
 
         public class LinkedList
@@ -81,13 +105,20 @@ namespace AlgoExpertAssesments
             head.next.next.next.next = new LinkedList(4);
             head.next.next.next.next.next = new LinkedList(5);
 
+            /*
+             *   0->1->2->3->4->5
+             *   0<-1<-2<-3<-4<-5
+             *   <-3<-4<-5<-0<-1<-2
+             */
             var head2 = InvertedBisection(head);
             while (head2 != null)
             {
                 Console.Write(head2.value + "->");
                 head2 = head2.next;
             }
+            Console.WriteLine("");
 
+            // 0-1
             head = new LinkedList(0);
             head.next = new LinkedList(1);
 
@@ -97,6 +128,37 @@ namespace AlgoExpertAssesments
                 Console.Write(head2.value + "->");
                 head2 = head2.next;
             }
+            Console.WriteLine("");
+
+            // 0->1->2
+            head = new LinkedList(0);
+            head.next = new LinkedList(1);
+            head.next.next = new LinkedList(2);
+
+            head2 = InvertedBisection(head);
+            while (head2 != null)
+            {
+                Console.Write(head2.value + "->");
+                head2 = head2.next;
+            }
+            Console.WriteLine("");
+
+            // 0->1->2->3->4
+            // 1->0 -> 2 -> 4->3
+            head = new LinkedList(0);
+            head.next = new LinkedList(1);
+            head.next.next = new LinkedList(2);
+            head.next.next.next = new LinkedList(3);
+            head.next.next.next.next = new LinkedList(4);
+
+            head2 = InvertedBisection(head);
+            while (head2 != null)
+            {
+                Console.Write(head2.value + "->");
+                head2 = head2.next;
+            }
+            Console.WriteLine("");
+
 
         }
         public static void TestGlobMatching()
